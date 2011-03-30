@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    >
-<TextView  
-    android:id="@+id/totalTimeText"
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"/>
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+    <TextView
+        android:id="@+id/totalTimeText"
+        android:layout_height="wrap_content"
+        android:text="@string/main_header_text"
+        android:layout_width="wrap_content" />
+    <CheckBox
+        android:layout_height="wrap_content"
+        android:id="@+id/mointoringBt"
+        android:text="@string/main_start_button"
+        android:layout_width="wrap_content"
+        android:onClick="monitoringBtClicked"
+        android:layout_margin="@dimen/basicMargin"
+        android:checked="false" />
+    <Button
+        android:id="@+id/resetBt"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Reset counter"
+        android:onClick="resetBtClicked"
+        android:layout_margin="@dimen/basicMargin" />
 </LinearLayout>

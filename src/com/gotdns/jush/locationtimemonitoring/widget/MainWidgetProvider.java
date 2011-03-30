@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.gotdns.jush.locationtimemonitoring.UpdateService;
+import com.gotdns.jush.locationtimemonitoring.activities.UpdateService;
 
 public class MainWidgetProvider extends AppWidgetProvider {
     // log tag
@@ -18,5 +18,12 @@ public class MainWidgetProvider extends AppWidgetProvider {
         Log.d(TAG, "Update!");
         // To prevent any ANR timeouts, we perform the update in a service
         context.startService(new Intent(context, UpdateService.class));
+    }
+    
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        // TODO Auto-generated method stub
+        Log.d(TAG, "onReceive");
+        super.onReceive(context, intent);
     }
 }

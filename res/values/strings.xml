@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string
-        name="hello">Hello World, MainActivity!</string>
+        name="main_header_text">Press button to start monitoring!</string>
+    <string
+        name="main_start_button">Start!</string>
+    <string
+        name="main_stop_button">Stop!</string>
     <string
         name="widget_text">Hello Widget!</string>
     <string
         name="app_name">Location Time Monitoring</string>
+    <string
+        name="monitoring_started">Monitoring started!</string>
+    <string
+        name="monitoring_stopped">Monitoring stopped!</string>
 </resources>
