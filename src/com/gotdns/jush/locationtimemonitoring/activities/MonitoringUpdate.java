@@ -79,7 +79,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
         } else {
             long totalTime = totalTimes.get(lastWifiSSID);
             int minutes = (int) (totalTime % 60);
-            int hours = (int) ((totalTime / 3600) % 60);
+            int hours = (int) (totalTime / 60);
             updateView.setTextViewText(R.id.widget_textview, "You've been connected to '"
                     + lastWifiSSID + "' " + hours + " hours and " + minutes + " minutes.");
         }
