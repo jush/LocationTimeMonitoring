@@ -5,9 +5,14 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -16,11 +21,11 @@ import com.gotdns.jush.locationtimemonitoring.R;
 
 public class MainActivity extends Activity {
     /**
-     * How often the wifi is checked in seconds
+     * How often the wifi is checked in minutes
      */
-    public static final long UPDATE_INTERVAL = 5 * 60;
+    public static final int DEFAULT_UPDATE_INTERVAL = 5;
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "com.gotdns.jush";
 
     private Toast mToast;
 
@@ -29,6 +34,25 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_options:
+                Intent settingsActivity = new Intent(getBaseContext(), MainPreferences.class);
+                startActivity(settingsActivity);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void monitoringBtClicked(View view) {
@@ -52,6 +76,7 @@ public class MainActivity extends Activity {
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
         am.cancel(sender);
+        Log.d(TAG, "Stoping monitoring Alarm. ");
 
         // Tell the user about what we did.
         if (mToast != null) {
@@ -74,22 +99,32 @@ public class MainActivity extends Activity {
 
         // We want the alarm to go off 10 seconds from now.
         long firstTime = SystemClock.elapsedRealtime();
-        firstTime += UPDATE_INTERVAL * 1000;
+        
+        int updateInterval = getUpdateInterval();
+        firstTime += updateInterval * 60 * 1000;
 
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, UPDATE_INTERVAL * 1000, sender);
+        am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime, updateInterval * 60 * 1000,
+                sender);
 
         // Tell the user about what we did.
         if (mToast != null) {
             mToast.cancel();
         }
-        mToast = Toast.makeText(MainActivity.this, R.string.monitoring_started, Toast.LENGTH_LONG);
+        Log.d(TAG, "Starting monitoring Alarm every: " + updateInterval  + " minute(s).");
+        String startMessage = getString(R.string.monitoring_started, Integer.valueOf(updateInterval));
+        mToast = Toast.makeText(MainActivity.this, startMessage, Toast.LENGTH_LONG);
         mToast.show();
     }
-    
-    public void resetBtClicked(View v){
-     // Tell the user about what we did.
+
+    private int getUpdateInterval() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        return Integer.valueOf(prefs.getString(getString(R.string.updateIntervalID), DEFAULT_UPDATE_INTERVAL + ""));
+    }
+
+    public void resetBtClicked(View v) {
+        // Tell the user about what we did.
         if (mToast != null) {
             mToast.cancel();
         }

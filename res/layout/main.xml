@@ -18,6 +18,10 @@
         android:onClick="monitoringBtClicked"
         android:layout_margin="@dimen/basicMargin"
         android:checked="false" />
+    <ListView
+        android:layout_height="wrap_content"
+        android:id="@+id/listView1"
+        android:layout_width="fill_parent"></ListView>
     <Button
         android:id="@+id/resetBt"
         android:layout_height="wrap_content"

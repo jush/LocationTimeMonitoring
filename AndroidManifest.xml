@@ -36,5 +36,6 @@
         </receiver>
 
         <service android:name="UpdateService"/>
+        <activity android:name=".activities.MainPreferences"></activity>
     </application>
 </manifest>
