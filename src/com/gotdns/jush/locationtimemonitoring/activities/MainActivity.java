@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         // IntentSender to have the intent executed as a broadcast.
         // Note that unlike above, this IntentSender is configured to
         // allow itself to be sent multiple times.
-        Intent intent = new Intent(MainActivity.this, MonitoringUpdate.class);
+        Intent intent = new Intent(MonitoringUpdate.MONITORING_UPDATE, null, MainActivity.this, MonitoringUpdate.class);
         PendingIntent sender = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         // We want the alarm to go off 10 seconds from now.

@@ -21,6 +21,9 @@ import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
 
+    public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
+            + ".MONITORING_UPDATE";
+
     private static String TAG = "com.gotdns.jush";
 
     // TODO: This should be stored in a more permanent place. Like into a
@@ -31,10 +34,19 @@ public class MonitoringUpdate extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(TAG, "Updating...");
-        Toast.makeText(context, "Updating...", Toast.LENGTH_SHORT).show();
-        updateCounters(context);
-        updateWidget(context);
+        String actionID = intent.getAction();
+        Log.d(TAG, "Received intent: " + actionID);
+        if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+            handleWifiStateChanged();
+        } else if (actionID != null && actionID.equals(MONITORING_UPDATE)) {
+            Toast.makeText(context, "Updating...", Toast.LENGTH_SHORT).show();
+            updateCounters(context);
+            updateWidget(context);
+        }
+    }
+
+    private void handleWifiStateChanged() {
+        // TODO Cancel Alarm and other stuff
     }
 
     private void updateCounters(Context context) {
