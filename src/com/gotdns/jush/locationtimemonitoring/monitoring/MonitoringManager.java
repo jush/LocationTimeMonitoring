@@ -25,6 +25,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
@@ -40,10 +41,11 @@ public class MonitoringManager {
 
     public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
             + ".MONITORING_UPDATE";
-    
+
     private static MonitoringManager singleton;
+
     private Context ctx;
-    
+
     /**
      * 
      */
@@ -51,9 +53,9 @@ public class MonitoringManager {
         LocalLog.debug("New MonitoringManager instance created!");
         this.ctx = applicationContext.getApplicationContext();
     }
-    
+
     public static MonitoringManager getInstance(Context applicationContext) {
-        if (singleton == null){
+        if (singleton == null) {
             singleton = new MonitoringManager(applicationContext);
         }
         return singleton;
@@ -80,6 +82,8 @@ public class MonitoringManager {
         am.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, firstTime,
                 updateInterval * 60 * 1000, sender);
 
+        setMonitoringStatus(true);
+
         // Tell the user about what we did.
         LocalLog.debug("Starting monitoring Alarm every: " + updateInterval + " minute(s).");
         String startMessage = ctx.getString(R.string.monitoring_started,
@@ -93,6 +97,8 @@ public class MonitoringManager {
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         am.cancel(sender);
+
+        setMonitoringStatus(false);
 
         // Tell the user about what we did.
         LocalLog.debug("Stoping monitoring Alarm. ");
@@ -116,5 +122,17 @@ public class MonitoringManager {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return Integer.valueOf(prefs.getString(ctx.getString(R.string.updateIntervalID),
                 DEFAULT_UPDATE_INTERVAL + ""));
+    }
+
+    private void setMonitoringStatus(boolean newStatus) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(ctx.getString(R.string.monitoringStatus), newStatus);
+        prefsEditor.commit();
+    }
+
+    public boolean getMonitoringStatus() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        return prefs.getBoolean(ctx.getString(R.string.monitoringStatus), false);
     }
 }

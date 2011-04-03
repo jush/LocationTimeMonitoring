@@ -48,8 +48,14 @@ public class MonitoringActionHandler extends BroadcastReceiver {
         }
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
-        if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
+        if (actionID == null) {
+            return;
+        }
+        if (actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
             handleWifiStateChanged(context);
+        } else if (actionID.equals(Intent.ACTION_BOOT_COMPLETED)) {
+            // TODO: If wireless is on when boot then the update should be started?
+            monitoringManager.stopMonitoring();
         }
     }
 

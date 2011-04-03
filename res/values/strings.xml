@@ -33,5 +33,8 @@
         name="monitoring_started">Monitoring every %s minutes...</string>
     <string
         name="monitoring_stopped">Monitoring stopped.</string>
-    <string name="updateIntervalID">updateInterval</string>
+    <string
+        name="updateIntervalID">updateInterval</string>
+    <string
+        name="monitoringStatus">monitoringStatus</string>
 </resources>

@@ -45,6 +45,28 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see android.app.Activity#onResume()
+     */
+    @Override
+    protected void onResume() {
+        setMonitoringBtStatus();
+        super.onResume();
+    }
+
+    /**
+     * 
+     */
+    private void setMonitoringBtStatus() {
+        CheckBox monitoringBt = (CheckBox) findViewById(R.id.mointoringBt);
+        if (monitoringBt != null) {
+            boolean status = monitoringManager.getMonitoringStatus();
+            monitoringBt.setChecked(status);
+            monitoringBt.setText((status ? R.string.main_stop_button : R.string.main_start_button));
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
