@@ -1,0 +1,12 @@
+= Location Time Monitoring =
+The main purpose of this Android app is to be able to track how long you spent in a 
+place based on the wifi networks.
+
+For example you want to track how many hours you spent at work. Then you would set 
+the app to monitor your work wifi
+
+It does not use any kind of location (GPS or network based).
+
+= Contact info =
+Author: Ramon Sadornil
+Mail: oni.pool@gmail.com
