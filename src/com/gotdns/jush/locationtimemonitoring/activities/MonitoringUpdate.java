@@ -8,23 +8,19 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.gotdns.jush.locationtimemonitoring.R;
+import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
 
     public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
             + ".MONITORING_UPDATE";
-
-    private static String TAG = "com.gotdns.jush";
 
     // TODO: This should be stored in a more permanent place. Like into a
     // database
@@ -35,7 +31,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String actionID = intent.getAction();
-        Log.d(TAG, "Received intent: " + actionID);
+        LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
             handleWifiStateChanged();
         } else if (actionID != null && actionID.equals(MONITORING_UPDATE)) {
@@ -53,7 +49,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) {
             Toast.makeText(context, "Unable to update wifi status", Toast.LENGTH_LONG);
-            Log.d(TAG, "Unable to update wifi status");
+            LocalLog.debug("Unable to update wifi status");
         }
         switch (wifiManager.getWifiState()) {
             case WifiManager.WIFI_STATE_ENABLED:
@@ -61,18 +57,19 @@ public class MonitoringUpdate extends BroadcastReceiver {
                 lastWifiSSID = wifiInfo.getSSID();
 
                 Long totalTime = totalTimes.get(lastWifiSSID);
+                int updateInterval = MonitoringManager.getUpdateInterval(context);
                 if (totalTime != null) {
-                    totalTime += getUpdateInterval(context);
+                    totalTime += updateInterval;
                 } else {
-                    totalTime = (long) getUpdateInterval(context);
+                    totalTime = (long) updateInterval;
                 }
 
-                Log.d(TAG, "Updating SSID: " + lastWifiSSID + " to " + totalTime);
+                LocalLog.debug("Updating SSID: " + lastWifiSSID + " to " + totalTime);
 
                 totalTimes.put(lastWifiSSID, totalTime);
                 break;
             default:
-                Log.d(TAG, "Wifi state: " + wifiManager.getWifiState());
+                LocalLog.debug("Wifi state: " + wifiManager.getWifiState());
                 break;
         }
     }
@@ -102,14 +99,5 @@ public class MonitoringUpdate extends BroadcastReceiver {
         for (String totalTimeKey : totalTimes.keySet()) {
             totalTimes.put(totalTimeKey, new Long(0));
         }
-    }
-
-    private int getUpdateInterval(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        Integer updateInterval = Integer.valueOf(prefs.getString(
-                context.getString(R.string.updateIntervalID), MainActivity.DEFAULT_UPDATE_INTERVAL
-                        + ""));
-        Log.d(TAG, "Update interval: " + updateInterval);
-        return updateInterval;
     }
 }

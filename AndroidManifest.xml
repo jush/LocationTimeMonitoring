@@ -47,7 +47,7 @@
                 android:resource="@xml/hello_widget_provider" />
         </receiver>
         <service
-            android:name="UpdateService" />
+            android:name=".activities.UpdateService" />
         <activity
             android:name=".activities.MainPreferences"></activity>
     </application>
