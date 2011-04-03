@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
     private void setMonitoringBtStatus() {
         CheckBox monitoringBt = (CheckBox) findViewById(R.id.mointoringBt);
         if (monitoringBt != null) {
-            boolean status = monitoringManager.getMonitoringStatus();
+            boolean status = monitoringManager.isMonitoring();
             monitoringBt.setChecked(status);
             monitoringBt.setText((status ? R.string.main_stop_button : R.string.main_start_button));
         }

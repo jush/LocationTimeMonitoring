@@ -131,7 +131,7 @@ public class MonitoringManager {
         prefsEditor.commit();
     }
 
-    public boolean getMonitoringStatus() {
+    public boolean isMonitoring() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getBoolean(ctx.getString(R.string.monitoringStatus), false);
     }
