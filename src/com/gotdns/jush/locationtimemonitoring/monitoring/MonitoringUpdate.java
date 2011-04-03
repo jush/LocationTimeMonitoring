@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -45,6 +46,8 @@ public class MonitoringUpdate extends BroadcastReceiver {
     private static HashMap<String, Long> totalTimes = new HashMap<String, Long>();
 
     private String lastWifiSSID;
+
+    private static long lastTimeUpdated = -1;
 
     public MonitoringUpdate() {
         LocalLog.debug("Monitoring update created!");
@@ -76,11 +79,11 @@ public class MonitoringUpdate extends BroadcastReceiver {
                 lastWifiSSID = wifiInfo.getSSID();
 
                 Long totalTime = totalTimes.get(lastWifiSSID);
-                int updateInterval = monitoringManager.getUpdateInterval();
+                long elapsedTime = getElapsedTime();
                 if (totalTime != null) {
-                    totalTime += updateInterval;
+                    totalTime += elapsedTime;
                 } else {
-                    totalTime = (long) updateInterval;
+                    totalTime = elapsedTime;
                 }
 
                 LocalLog.debug("Updating SSID: " + lastWifiSSID + " to " + totalTime);
@@ -91,6 +94,24 @@ public class MonitoringUpdate extends BroadcastReceiver {
                 LocalLog.debug("Wifi state: " + wifiManager.getWifiState());
                 break;
         }
+    }
+
+    /**
+     * @return
+     */
+    private long getElapsedTime() {
+        if (lastTimeUpdated < 0) {
+            // The first time the update is called
+            lastTimeUpdated = SystemClock.elapsedRealtime();
+            LocalLog.debug("Last time updated was zero, now is : " + lastTimeUpdated);
+            return 0;
+        }
+        long currentTime = SystemClock.elapsedRealtime();
+        long elapsedTime = currentTime - lastTimeUpdated;
+        LocalLog.debug("Elapsed time is: " + elapsedTime);
+        lastTimeUpdated = currentTime;
+        LocalLog.debug("Last time updated now is : " + lastTimeUpdated);
+        return elapsedTime / 1000;
     }
 
     private void updateWidget(Context context) {
@@ -106,17 +127,13 @@ public class MonitoringUpdate extends BroadcastReceiver {
             updateView.setTextViewText(R.id.widget_textview, "Device disconnected.");
         } else {
             long totalTime = totalTimes.get(lastWifiSSID);
-            int minutes = (int) (totalTime % 60);
-            int hours = (int) (totalTime / 60);
+            int seconds = (int) totalTime % 60;
+            int minutes = (int) ((totalTime / 60) % 60);
+            int hours = (int) (totalTime / 3600);
             updateView.setTextViewText(R.id.widget_textview, "You've been connected to '"
-                    + lastWifiSSID + "' " + hours + " hours and " + minutes + " minutes.");
+                    + lastWifiSSID + "' " + hours + " hours, " + minutes + " minutes and "
+                    + seconds + " seconds.");
         }
         return updateView;
-    }
-
-    public static void resetCounter() {
-        for (String totalTimeKey : totalTimes.keySet()) {
-            totalTimes.put(totalTimeKey, new Long(0));
-        }
     }
 }

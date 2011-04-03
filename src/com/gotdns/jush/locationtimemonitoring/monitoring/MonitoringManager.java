@@ -75,7 +75,6 @@ public class MonitoringManager {
         long firstTime = SystemClock.elapsedRealtime();
 
         int updateInterval = getUpdateInterval();
-        firstTime += updateInterval * 60 * 1000;
 
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
@@ -97,6 +96,9 @@ public class MonitoringManager {
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         am.cancel(sender);
+
+        // TODO: When monitoring is stop the last time variable should be
+        // cleared.
 
         setMonitoringStatus(false);
 
