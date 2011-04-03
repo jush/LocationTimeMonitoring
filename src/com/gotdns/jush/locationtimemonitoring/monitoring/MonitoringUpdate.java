@@ -38,6 +38,8 @@ import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
 
+    private MonitoringManager monitoringManager;
+
     // TODO: This should be stored in a more permanent place. Like into a
     // database
     private static HashMap<String, Long> totalTimes = new HashMap<String, Long>();
@@ -46,6 +48,10 @@ public class MonitoringUpdate extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (monitoringManager == null) {
+            LocalLog.debug("Getting MonitoringManager instance in MonitoringUpdate");
+            monitoringManager = MonitoringManager.getInstance(context.getApplicationContext());
+        }
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
@@ -64,10 +70,10 @@ public class MonitoringUpdate extends BroadcastReceiver {
         }
         switch (wifiManager.getWifiState()) {
             case WifiManager.WIFI_STATE_ENABLED:
-                MonitoringManager.startMonitoring(context);
+                monitoringManager.startMonitoring();
                 break;
             case WifiManager.WIFI_STATE_DISABLED:
-                MonitoringManager.stopMonitoring(context);
+                monitoringManager.stopMonitoring();
                 break;
         }
     }
@@ -84,7 +90,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
                 lastWifiSSID = wifiInfo.getSSID();
 
                 Long totalTime = totalTimes.get(lastWifiSSID);
-                int updateInterval = MonitoringManager.getUpdateInterval(context);
+                int updateInterval = monitoringManager.getUpdateInterval();
                 if (totalTime != null) {
                     totalTime += updateInterval;
                 } else {

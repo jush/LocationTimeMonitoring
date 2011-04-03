@@ -40,8 +40,26 @@ public class MonitoringManager {
 
     public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
             + ".MONITORING_UPDATE";
+    
+    private static MonitoringManager singleton;
+    private Context ctx;
+    
+    /**
+     * 
+     */
+    private MonitoringManager(Context applicationContext) {
+        LocalLog.debug("New MonitoringManager instance created!");
+        this.ctx = applicationContext.getApplicationContext();
+    }
+    
+    public static MonitoringManager getInstance(Context applicationContext) {
+        if (singleton == null){
+            singleton = new MonitoringManager(applicationContext);
+        }
+        return singleton;
+    }
 
-    public static void startMonitoring(Context ctx) {
+    public void startMonitoring() {
         // When the alarm goes off, we want to broadcast an Intent to our
         // BroadcastReceiver. Here we make an Intent with an explicit class
         // name to have our own receiver (which has been published in
@@ -49,12 +67,12 @@ public class MonitoringManager {
         // IntentSender to have the intent executed as a broadcast.
         // Note that unlike above, this IntentSender is configured to
         // allow itself to be sent multiple times.
-        PendingIntent sender = getPendingIntent(ctx);
+        PendingIntent sender = getPendingIntent();
 
         // We want the alarm to go off 10 seconds from now.
         long firstTime = SystemClock.elapsedRealtime();
 
-        int updateInterval = getUpdateInterval(ctx);
+        int updateInterval = getUpdateInterval();
         firstTime += updateInterval * 60 * 1000;
 
         // Schedule the alarm!
@@ -69,8 +87,8 @@ public class MonitoringManager {
         Toast.makeText(ctx, startMessage, Toast.LENGTH_LONG).show();
     }
 
-    public static void stopMonitoring(Context ctx) {
-        PendingIntent sender = getPendingIntent(ctx);
+    public void stopMonitoring() {
+        PendingIntent sender = getPendingIntent();
 
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
@@ -81,7 +99,7 @@ public class MonitoringManager {
         Toast.makeText(ctx, R.string.monitoring_stopped, Toast.LENGTH_LONG).show();
     }
 
-    private static PendingIntent getPendingIntent(Context ctx, boolean create) {
+    private PendingIntent getPendingIntent(boolean create) {
         // Create the same intent, and thus a matching IntentSender, for
         // the one that was scheduled.
         Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
@@ -90,11 +108,11 @@ public class MonitoringManager {
         return sender;
     }
 
-    private static PendingIntent getPendingIntent(Context ctx) {
-        return getPendingIntent(ctx, false);
+    private PendingIntent getPendingIntent() {
+        return getPendingIntent(true);
     }
 
-    public static int getUpdateInterval(Context ctx) {
+    public int getUpdateInterval() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return Integer.valueOf(prefs.getString(ctx.getString(R.string.updateIntervalID),
                 DEFAULT_UPDATE_INTERVAL + ""));

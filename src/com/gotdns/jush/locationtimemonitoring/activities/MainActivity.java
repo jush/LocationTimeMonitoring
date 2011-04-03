@@ -35,10 +35,13 @@ import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 
 public class MainActivity extends Activity {
 
+    private MonitoringManager monitoringManager;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        monitoringManager = MonitoringManager.getInstance(getApplicationContext());
         setContentView(R.layout.main);
     }
 
@@ -66,10 +69,10 @@ public class MainActivity extends Activity {
         LocalLog.debug("Monitoring toggle button clicked!" + monitoringBt.isChecked());
         if (monitoringBt.isChecked()) {
             monitoringBt.setText(R.string.main_stop_button);
-            MonitoringManager.startMonitoring(this);
+            monitoringManager.startMonitoring();
         } else {
             monitoringBt.setText(R.string.main_start_button);
-            MonitoringManager.stopMonitoring(this);
+            monitoringManager.stopMonitoring();
         }
     }
 
