@@ -1,5 +1,5 @@
 
-package com.gotdns.jush.locationtimemonitoring.activities;
+package com.gotdns.jush.locationtimemonitoring.widget;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -10,9 +10,8 @@ import android.os.IBinder;
 import android.widget.RemoteViews;
 
 import com.gotdns.jush.locationtimemonitoring.R;
-import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
-public class UpdateService extends Service {
+public class UpdateWidgetService extends Service {
     
     public static int counter = 0;
 
