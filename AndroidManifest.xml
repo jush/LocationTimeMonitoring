@@ -44,7 +44,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/hello_widget_provider" />
+                android:resource="@xml/mainwidgetprovider" />
         </receiver>
         <service
             android:name=".widget.UpdateWidgetService" />
