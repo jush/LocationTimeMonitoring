@@ -26,7 +26,7 @@
     <uses-sdk
         android:minSdkVersion="7" />
     <uses-permission
-        android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+        android:name="android.permission.ACCESS_WIFI_STATE" />
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name">
@@ -41,16 +41,24 @@
             </intent-filter>
         </activity>
         <receiver
-            android:process=":remote"
+            android:process=":update"
             android:name=".monitoring.MonitoringUpdate"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <!-- The own application intent action (used for the AlarmManager) -->
+                <action
+                    android:name=".monitoring.MONITORING_UPDATE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:process=":handler"
+            android:name=".monitoring.MonitoringActionHandler"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action
                     android:name="android.net.wifi.WIFI_STATE_CHANGED" />
-                <!-- The own application intent action (used for the AlarmManager) -->
-                <action
-                    android:name=".monitoring.MONITORING_UPDATE" />
             </intent-filter>
         </receiver>
         <!-- Broadcast Receiver that will process AppWidget updates -->

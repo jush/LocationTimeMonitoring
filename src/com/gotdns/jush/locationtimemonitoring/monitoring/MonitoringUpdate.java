@@ -46,6 +46,10 @@ public class MonitoringUpdate extends BroadcastReceiver {
 
     private String lastWifiSSID;
 
+    public MonitoringUpdate() {
+        LocalLog.debug("Monitoring update created!");
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         if (monitoringManager == null) {
@@ -54,27 +58,9 @@ public class MonitoringUpdate extends BroadcastReceiver {
         }
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
-        if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
-            handleWifiStateChanged(context);
-        } else if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
+        if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
             updateCounters(context);
             updateWidget(context);
-        }
-    }
-
-    private void handleWifiStateChanged(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        if (wifiManager == null) {
-            Toast.makeText(context, "Unable to update wifi status", Toast.LENGTH_LONG);
-            LocalLog.debug("Unable to update wifi status");
-        }
-        switch (wifiManager.getWifiState()) {
-            case WifiManager.WIFI_STATE_ENABLED:
-                monitoringManager.startMonitoring();
-                break;
-            case WifiManager.WIFI_STATE_DISABLED:
-                monitoringManager.stopMonitoring();
-                break;
         }
     }
 
