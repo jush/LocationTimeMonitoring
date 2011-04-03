@@ -49,8 +49,7 @@ public class MonitoringManager {
         // IntentSender to have the intent executed as a broadcast.
         // Note that unlike above, this IntentSender is configured to
         // allow itself to be sent multiple times.
-        Intent intent = new Intent(MONITORING_UPDATE, null, ctx,
-                MonitoringUpdate.class);
+        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
         PendingIntent sender = PendingIntent.getBroadcast(ctx, 0, intent, 0);
 
         // We want the alarm to go off 10 seconds from now.
@@ -74,7 +73,7 @@ public class MonitoringManager {
     public static void stopMonitoring(Context ctx) {
         // Create the same intent, and thus a matching IntentSender, for
         // the one that was scheduled.
-        Intent intent = new Intent(ctx, MonitoringUpdate.class);
+        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
         PendingIntent sender = PendingIntent.getBroadcast(ctx, 0, intent, 0);
 
         // And cancel the alarm.

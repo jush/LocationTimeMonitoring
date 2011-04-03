@@ -49,16 +49,27 @@ public class MonitoringUpdate extends BroadcastReceiver {
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
-            handleWifiStateChanged();
+            handleWifiStateChanged(context);
         } else if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
-            Toast.makeText(context, "Updating...", Toast.LENGTH_SHORT).show();
             updateCounters(context);
             updateWidget(context);
         }
     }
 
-    private void handleWifiStateChanged() {
-        // TODO Cancel Alarm and other stuff
+    private void handleWifiStateChanged(Context context) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (wifiManager == null) {
+            Toast.makeText(context, "Unable to update wifi status", Toast.LENGTH_LONG);
+            LocalLog.debug("Unable to update wifi status");
+        }
+        switch (wifiManager.getWifiState()) {
+            case WifiManager.WIFI_STATE_ENABLED:
+                MonitoringManager.startMonitoring(context);
+                break;
+            case WifiManager.WIFI_STATE_DISABLED:
+                MonitoringManager.stopMonitoring(context);
+                break;
+        }
     }
 
     private void updateCounters(Context context) {
