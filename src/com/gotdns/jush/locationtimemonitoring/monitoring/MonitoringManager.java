@@ -49,8 +49,7 @@ public class MonitoringManager {
         // IntentSender to have the intent executed as a broadcast.
         // Note that unlike above, this IntentSender is configured to
         // allow itself to be sent multiple times.
-        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
-        PendingIntent sender = PendingIntent.getBroadcast(ctx, 0, intent, 0);
+        PendingIntent sender = getPendingIntent(ctx);
 
         // We want the alarm to go off 10 seconds from now.
         long firstTime = SystemClock.elapsedRealtime();
@@ -71,10 +70,7 @@ public class MonitoringManager {
     }
 
     public static void stopMonitoring(Context ctx) {
-        // Create the same intent, and thus a matching IntentSender, for
-        // the one that was scheduled.
-        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
-        PendingIntent sender = PendingIntent.getBroadcast(ctx, 0, intent, 0);
+        PendingIntent sender = getPendingIntent(ctx);
 
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
@@ -83,6 +79,19 @@ public class MonitoringManager {
         // Tell the user about what we did.
         LocalLog.debug("Stoping monitoring Alarm. ");
         Toast.makeText(ctx, R.string.monitoring_stopped, Toast.LENGTH_LONG).show();
+    }
+
+    private static PendingIntent getPendingIntent(Context ctx, boolean create) {
+        // Create the same intent, and thus a matching IntentSender, for
+        // the one that was scheduled.
+        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
+        int flags = create ? 0 : PendingIntent.FLAG_NO_CREATE;
+        PendingIntent sender = PendingIntent.getBroadcast(ctx, flags, intent, 0);
+        return sender;
+    }
+
+    private static PendingIntent getPendingIntent(Context ctx) {
+        return getPendingIntent(ctx, false);
     }
 
     public static int getUpdateInterval(Context ctx) {
