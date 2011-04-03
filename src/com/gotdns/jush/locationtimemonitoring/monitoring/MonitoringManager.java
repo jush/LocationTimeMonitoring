@@ -1,5 +1,5 @@
 
-package com.gotdns.jush.locationtimemonitoring.activities;
+package com.gotdns.jush.locationtimemonitoring.monitoring;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -19,6 +19,9 @@ public class MonitoringManager {
      */
     public static final int DEFAULT_UPDATE_INTERVAL = 5;
 
+    public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
+            + ".MONITORING_UPDATE";
+
     public static void startMonitoring(Context ctx) {
         // When the alarm goes off, we want to broadcast an Intent to our
         // BroadcastReceiver. Here we make an Intent with an explicit class
@@ -27,7 +30,7 @@ public class MonitoringManager {
         // IntentSender to have the intent executed as a broadcast.
         // Note that unlike above, this IntentSender is configured to
         // allow itself to be sent multiple times.
-        Intent intent = new Intent(MonitoringUpdate.MONITORING_UPDATE, null, ctx,
+        Intent intent = new Intent(MONITORING_UPDATE, null, ctx,
                 MonitoringUpdate.class);
         PendingIntent sender = PendingIntent.getBroadcast(ctx, 0, intent, 0);
 

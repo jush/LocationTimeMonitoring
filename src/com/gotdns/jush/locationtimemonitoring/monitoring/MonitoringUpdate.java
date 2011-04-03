@@ -1,5 +1,5 @@
 
-package com.gotdns.jush.locationtimemonitoring.activities;
+package com.gotdns.jush.locationtimemonitoring.monitoring;
 
 import java.util.HashMap;
 
@@ -19,9 +19,6 @@ import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
 
-    public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
-            + ".MONITORING_UPDATE";
-
     // TODO: This should be stored in a more permanent place. Like into a
     // database
     private static HashMap<String, Long> totalTimes = new HashMap<String, Long>();
@@ -34,7 +31,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
         LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(WifiManager.WIFI_STATE_CHANGED_ACTION)) {
             handleWifiStateChanged();
-        } else if (actionID != null && actionID.equals(MONITORING_UPDATE)) {
+        } else if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
             Toast.makeText(context, "Updating...", Toast.LENGTH_SHORT).show();
             updateCounters(context);
             updateWidget(context);

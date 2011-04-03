@@ -23,7 +23,7 @@
         </activity>
         <receiver
             android:process=":remote"
-            android:name=".activities.MonitoringUpdate"
+            android:name=".monitoring.MonitoringUpdate"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -31,7 +31,7 @@
                     android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <!-- The own application intent action (used for the AlarmManager) -->
                 <action
-                    android:name=".activities.MonitoringUpdate" />
+                    android:name=".monitoring.MONITORING_UPDATE" />
             </intent-filter>
         </receiver>
         <!-- Broadcast Receiver that will process AppWidget updates -->

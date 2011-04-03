@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.gotdns.jush.locationtimemonitoring.R;
+import com.gotdns.jush.locationtimemonitoring.monitoring.MonitoringManager;
 import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 
 public class MainActivity extends Activity {
