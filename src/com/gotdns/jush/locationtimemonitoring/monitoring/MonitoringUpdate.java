@@ -38,6 +38,9 @@ import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
+    public enum Flag {
+        NOTHING, RESET_TIME
+    }
 
     private MonitoringManager monitoringManager;
 
@@ -62,9 +65,30 @@ public class MonitoringUpdate extends BroadcastReceiver {
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
-            updateCounters(context);
-            updateWidget(context);
+            if (handleFlag(intent)) {
+                updateCounters(context);
+                updateWidget(context);
+            } else {
+                LocalLog.debug("Update has been cancelled");
+            }
         }
+    }
+
+    /**
+     * @param intent
+     * @return false if update should be cancelled.
+     */
+    private boolean handleFlag(Intent intent) {
+        if (intent.hasExtra(MonitoringManager.MONITORING_UPDATE)) {
+            int flag = intent.getIntExtra(MonitoringManager.MONITORING_UPDATE,
+                    Flag.NOTHING.ordinal());
+            switch (Flag.values()[flag]) {
+                case RESET_TIME:
+                    lastTimeUpdated = -1;
+                    return false;
+            }
+        }
+        return true;
     }
 
     private void updateCounters(Context context) {

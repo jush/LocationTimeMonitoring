@@ -31,6 +31,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 import com.gotdns.jush.locationtimemonitoring.R;
+import com.gotdns.jush.locationtimemonitoring.monitoring.MonitoringUpdate.Flag;
 import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 
 public class MonitoringManager {
@@ -71,7 +72,7 @@ public class MonitoringManager {
         // allow itself to be sent multiple times.
         PendingIntent sender = getPendingIntent();
 
-        // We want the alarm to go off 10 seconds from now.
+        // We want the alarm to go off now.
         long firstTime = SystemClock.elapsedRealtime();
 
         int updateInterval = getUpdateInterval();
@@ -96,28 +97,45 @@ public class MonitoringManager {
         // And cancel the alarm.
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         am.cancel(sender);
-
-        // TODO: When monitoring is stop the last time variable should be
-        // cleared.
+        sender.cancel();
 
         setMonitoringStatus(false);
+        // When monitoring is stop the last time variable should be cleared.
+        notifyToReceivers(Flag.RESET_TIME);
 
         // Tell the user about what we did.
         LocalLog.debug("Stoping monitoring Alarm. ");
         Toast.makeText(ctx, R.string.monitoring_stopped, Toast.LENGTH_LONG).show();
     }
 
-    private PendingIntent getPendingIntent(boolean create) {
-        // Create the same intent, and thus a matching IntentSender, for
-        // the one that was scheduled.
-        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
-        int flags = create ? 0 : PendingIntent.FLAG_NO_CREATE;
-        PendingIntent sender = PendingIntent.getBroadcast(ctx, flags, intent, 0);
+    /**
+     * @param resetTime
+     */
+    private void notifyToReceivers(Flag resetTime) {
+        Intent sender = getIntent(resetTime);
+        ctx.sendBroadcast(sender);
+    }
+
+    public PendingIntent getPendingIntent(Flag flag) {
+        Intent intent = getIntent(flag);
+        PendingIntent sender = PendingIntent.getBroadcast(ctx, PendingIntent.FLAG_CANCEL_CURRENT,
+                intent, 0);
         return sender;
     }
 
+    private Intent getIntent(Flag flag) {
+        // Create the same intent, and thus a matching IntentSender, for
+        // the one that was scheduled.
+        Intent intent = new Intent(MONITORING_UPDATE, null, ctx, MonitoringUpdate.class);
+        if (flag != null)
+            intent.putExtra(MONITORING_UPDATE, flag.ordinal());
+        else
+            intent.removeExtra(MONITORING_UPDATE);
+        return intent;
+    }
+
     private PendingIntent getPendingIntent() {
-        return getPendingIntent(true);
+        return getPendingIntent(null);
     }
 
     public int getUpdateInterval() {
