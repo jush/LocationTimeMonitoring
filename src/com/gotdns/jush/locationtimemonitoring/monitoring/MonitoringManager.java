@@ -109,10 +109,10 @@ public class MonitoringManager {
     }
 
     /**
-     * @param resetTime
+     * @param flag
      */
-    private void notifyToReceivers(Flag resetTime) {
-        Intent sender = getIntent(resetTime);
+    private void notifyToReceivers(Flag flag) {
+        Intent sender = getIntent(flag);
         ctx.sendBroadcast(sender);
     }
 
@@ -154,5 +154,12 @@ public class MonitoringManager {
     public boolean isMonitoring() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         return prefs.getBoolean(ctx.getString(R.string.monitoringStatus), false);
+    }
+
+    /**
+     * 
+     */
+    public void resetCounter() {
+        notifyToReceivers(Flag.CLEAR_COUNTERS);
     }
 }

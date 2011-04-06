@@ -99,6 +99,6 @@ public class MainActivity extends Activity {
     }
 
     public void resetBtClicked(View v) {
-        // TODO: reset values
+        monitoringManager.resetCounter();
     }
 }

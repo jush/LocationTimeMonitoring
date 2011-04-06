@@ -39,7 +39,7 @@ import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
     public enum Flag {
-        NOTHING, RESET_TIME
+        NOTHING, RESET_TIME, CLEAR_COUNTERS
     }
 
     private MonitoringManager monitoringManager;
@@ -83,12 +83,26 @@ public class MonitoringUpdate extends BroadcastReceiver {
             int flag = intent.getIntExtra(MonitoringManager.MONITORING_UPDATE,
                     Flag.NOTHING.ordinal());
             switch (Flag.values()[flag]) {
+                case CLEAR_COUNTERS:
+                    clearCounters();
+                    // Also resets the time so there's no break
                 case RESET_TIME:
                     lastTimeUpdated = -1;
                     return false;
             }
         }
         return true;
+    }
+
+    /**
+     * 
+     */
+    private void clearCounters() {
+        LocalLog.debug("Counters before clearing:");
+        for (String ssid : totalTimes.keySet()){
+            LocalLog.debug("\t" + ssid + ": " + totalTimes.get(ssid));
+        }
+        totalTimes.clear();
     }
 
     private void updateCounters(Context context) {
