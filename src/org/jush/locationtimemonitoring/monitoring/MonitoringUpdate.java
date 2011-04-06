@@ -18,7 +18,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.monitoring;
+package org.jush.locationtimemonitoring.monitoring;
 
 import java.util.HashMap;
 
@@ -33,9 +33,9 @@ import android.os.SystemClock;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.gotdns.jush.locationtimemonitoring.R;
-import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
-import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
+import org.jush.locationtimemonitoring.R;
+import org.jush.locationtimemonitoring.util.LocalLog;
+import org.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
     public enum Flag {

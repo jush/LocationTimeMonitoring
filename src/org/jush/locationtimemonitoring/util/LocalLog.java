@@ -18,7 +18,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.util;
+package org.jush.locationtimemonitoring.util;
 
 import android.util.Log;
 
@@ -26,7 +26,7 @@ import android.util.Log;
  * @author jush
  */
 public abstract class LocalLog {
-    private static final String LOG_TAG = "com.gotdns.jush.locationtimemonitoring";
+    private static final String LOG_TAG = "org.jush.locationtimemonitoring";
 
     public static void debug(String msg) {
         Log.d(LOG_TAG, msg);

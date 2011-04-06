@@ -18,7 +18,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.monitoring;
+package org.jush.locationtimemonitoring.monitoring;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -30,9 +30,9 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import com.gotdns.jush.locationtimemonitoring.R;
-import com.gotdns.jush.locationtimemonitoring.monitoring.MonitoringUpdate.Flag;
-import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
+import org.jush.locationtimemonitoring.R;
+import org.jush.locationtimemonitoring.monitoring.MonitoringUpdate.Flag;
+import org.jush.locationtimemonitoring.util.LocalLog;
 
 public class MonitoringManager {
     /**

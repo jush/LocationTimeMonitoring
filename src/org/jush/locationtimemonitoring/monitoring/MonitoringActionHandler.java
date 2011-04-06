@@ -18,9 +18,9 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.monitoring;
+package org.jush.locationtimemonitoring.monitoring;
 
-import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
+import org.jush.locationtimemonitoring.util.LocalLog;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

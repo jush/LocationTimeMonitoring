@@ -18,7 +18,7 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.widget;
+package org.jush.locationtimemonitoring.widget;
 
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -28,7 +28,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
-import com.gotdns.jush.locationtimemonitoring.R;
+import org.jush.locationtimemonitoring.R;
 
 public class UpdateWidgetService extends Service {
     

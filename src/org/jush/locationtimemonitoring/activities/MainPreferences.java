@@ -18,27 +18,18 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package com.gotdns.jush.locationtimemonitoring.widget;
+package org.jush.locationtimemonitoring.activities;
 
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
-import android.content.Context;
-import android.content.Intent;
+import org.jush.locationtimemonitoring.R;
 
-import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
 
-public class MainWidgetProvider extends AppWidgetProvider {
-
+public class MainPreferences extends PreferenceActivity {
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        LocalLog.debug("Update!");
-        // To prevent any ANR timeouts, we perform the update in a service
-        // context.startService(new Intent(context, UpdateService.class));
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.mainpreferences);
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        LocalLog.debug("onReceive");
-        super.onReceive(context, intent);
-    }
 }
