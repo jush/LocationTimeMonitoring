@@ -25,7 +25,9 @@ import com.gotdns.jush.locationtimemonitoring.util.LocalLog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.widget.Toast;
 
 /**
@@ -56,6 +58,32 @@ public class MonitoringActionHandler extends BroadcastReceiver {
         } else if (actionID.equals(Intent.ACTION_BOOT_COMPLETED)) {
             // TODO: If wireless is on when boot then the update should be started?
             monitoringManager.stopMonitoring();
+        } else if (actionID.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+            handleNetworkStateChanged(context, intent);
+        }
+    }
+
+    /**
+     * @param context
+     * @param intent
+     */
+    private void handleNetworkStateChanged(Context context, Intent intent) {
+        Bundle bundle = intent.getExtras();
+        if (bundle == null) {
+            LocalLog.debug("Unable to fetch extra network information");
+            return;
+        }
+        NetworkInfo networkInfo = (NetworkInfo) bundle.get(WifiManager.EXTRA_NETWORK_INFO);
+        if (networkInfo == null) {
+            LocalLog.debug("Unable to fetch extra network information");
+        }
+        LocalLog.debug("New network state: " + networkInfo.getState());
+        if (networkInfo.getState() == NetworkInfo.State.DISCONNECTING) {
+            LocalLog.debug("Network is disconnecting...");
+            monitoringManager.disconnecting();
+        } else if (networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+            LocalLog.debug("Network is connected");
+            monitoringManager.startMonitoring();
         }
     }
 
@@ -67,9 +95,10 @@ public class MonitoringActionHandler extends BroadcastReceiver {
         }
         switch (wifiManager.getWifiState()) {
             case WifiManager.WIFI_STATE_ENABLED:
-                monitoringManager.startMonitoring();
+                // Nothing to do, monitoring will start once the device is connected
                 break;
             case WifiManager.WIFI_STATE_DISABLED:
+                monitoringManager.disconnecting();
                 monitoringManager.stopMonitoring();
                 break;
         }

@@ -39,7 +39,7 @@ import com.gotdns.jush.locationtimemonitoring.widget.MainWidgetProvider;
 
 public class MonitoringUpdate extends BroadcastReceiver {
     public enum Flag {
-        NOTHING, RESET_TIME, CLEAR_COUNTERS
+        NOTHING, RESET_TIME, CLEAR_COUNTERS, FORCE_UPDATE_LAST
     }
 
     private MonitoringManager monitoringManager;
@@ -48,7 +48,7 @@ public class MonitoringUpdate extends BroadcastReceiver {
     // database
     private static HashMap<String, Long> totalTimes = new HashMap<String, Long>();
 
-    private String lastWifiSSID;
+    private static String lastWifiSSID;
 
     private static long lastTimeUpdated = -1;
 
@@ -65,8 +65,8 @@ public class MonitoringUpdate extends BroadcastReceiver {
         String actionID = intent.getAction();
         LocalLog.debug("Received intent: " + actionID);
         if (actionID != null && actionID.equals(MonitoringManager.MONITORING_UPDATE)) {
-            if (handleFlag(intent)) {
-                updateCounters(context);
+            if (handleFlag(context, intent)) {
+                updateSsidAndTime(context);
                 updateWidget(context);
             } else {
                 LocalLog.debug("Update has been cancelled");
@@ -75,10 +75,11 @@ public class MonitoringUpdate extends BroadcastReceiver {
     }
 
     /**
+     * @param context 
      * @param intent
      * @return false if update should be cancelled.
      */
-    private boolean handleFlag(Intent intent) {
+    private boolean handleFlag(Context context, Intent intent) {
         if (intent.hasExtra(MonitoringManager.MONITORING_UPDATE)) {
             int flag = intent.getIntExtra(MonitoringManager.MONITORING_UPDATE,
                     Flag.NOTHING.ordinal());
@@ -88,6 +89,10 @@ public class MonitoringUpdate extends BroadcastReceiver {
                     // Also resets the time so there's no break
                 case RESET_TIME:
                     lastTimeUpdated = -1;
+                    return false;
+                case FORCE_UPDATE_LAST:
+                    updateTime(lastWifiSSID);
+                    updateWidget(context);
                     return false;
             }
         }
@@ -99,13 +104,13 @@ public class MonitoringUpdate extends BroadcastReceiver {
      */
     private void clearCounters() {
         LocalLog.debug("Counters before clearing:");
-        for (String ssid : totalTimes.keySet()){
+        for (String ssid : totalTimes.keySet()) {
             LocalLog.debug("\t" + ssid + ": " + totalTimes.get(ssid));
         }
         totalTimes.clear();
     }
 
-    private void updateCounters(Context context) {
+    private void updateSsidAndTime(Context context) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) {
             Toast.makeText(context, "Unable to update wifi status", Toast.LENGTH_LONG);
@@ -116,22 +121,26 @@ public class MonitoringUpdate extends BroadcastReceiver {
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 lastWifiSSID = wifiInfo.getSSID();
 
-                Long totalTime = totalTimes.get(lastWifiSSID);
-                long elapsedTime = getElapsedTime();
-                if (totalTime != null) {
-                    totalTime += elapsedTime;
-                } else {
-                    totalTime = elapsedTime;
-                }
-
-                LocalLog.debug("Updating SSID: " + lastWifiSSID + " to " + totalTime);
-
-                totalTimes.put(lastWifiSSID, totalTime);
+                updateTime(lastWifiSSID);
                 break;
             default:
                 LocalLog.debug("Wifi state: " + wifiManager.getWifiState());
                 break;
         }
+    }
+
+    private void updateTime(String idToUpdate) {
+        Long totalTime = totalTimes.get(idToUpdate);
+        long elapsedTime = getElapsedTime();
+        if (totalTime != null) {
+            totalTime += elapsedTime;
+        } else {
+            totalTime = elapsedTime;
+        }
+
+        LocalLog.debug("Updating: " + idToUpdate + " to " + totalTime);
+
+        totalTimes.put(idToUpdate, totalTime);
     }
 
     /**

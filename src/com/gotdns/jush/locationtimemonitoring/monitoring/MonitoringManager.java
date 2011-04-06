@@ -101,7 +101,7 @@ public class MonitoringManager {
 
         setMonitoringStatus(false);
         // When monitoring is stop the last time variable should be cleared.
-        notifyToReceivers(Flag.RESET_TIME);
+        notifyToUpdate(Flag.RESET_TIME);
 
         // Tell the user about what we did.
         LocalLog.debug("Stoping monitoring Alarm. ");
@@ -111,7 +111,7 @@ public class MonitoringManager {
     /**
      * @param flag
      */
-    private void notifyToReceivers(Flag flag) {
+    private void notifyToUpdate(Flag flag) {
         Intent sender = getIntent(flag);
         ctx.sendBroadcast(sender);
     }
@@ -160,6 +160,13 @@ public class MonitoringManager {
      * 
      */
     public void resetCounter() {
-        notifyToReceivers(Flag.CLEAR_COUNTERS);
+        notifyToUpdate(Flag.CLEAR_COUNTERS);
+    }
+
+    /**
+     * 
+     */
+    public void disconnecting() {
+        notifyToUpdate(Flag.FORCE_UPDATE_LAST);
     }
 }

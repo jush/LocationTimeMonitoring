@@ -63,6 +63,8 @@
                     android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action
                     android:name="android.intent.action.BOOT_COMPLETED" />
+                <action
+                    android:name="android.net.wifi.STATE_CHANGE" />
             </intent-filter>
         </receiver>
         <!-- Broadcast Receiver that will process AppWidget updates -->
