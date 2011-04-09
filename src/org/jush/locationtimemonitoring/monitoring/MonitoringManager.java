@@ -36,10 +36,13 @@ import org.jush.locationtimemonitoring.util.LocalLog;
 
 public class MonitoringManager {
     /**
-     * How often the wifi is checked in minutes
+     * How often the wifi is checked in minutes by default
      */
     public static final int DEFAULT_UPDATE_INTERVAL = 5;
 
+    /**
+     * Unique string used to broadcast intents to the monitoring update.
+     */
     public static String MONITORING_UPDATE = MonitoringUpdate.class.getPackage().getName()
             + ".MONITORING_UPDATE";
 
@@ -48,7 +51,10 @@ public class MonitoringManager {
     private Context ctx;
 
     /**
+     * This class is singleton so the constructor is hidden
      * 
+     * @param applicationContext the unique application context that will be
+     *            used to broadcast intents and retrieve system services.
      */
     private MonitoringManager(Context applicationContext) {
         LocalLog.debug("New MonitoringManager instance created!");
@@ -63,6 +69,12 @@ public class MonitoringManager {
     }
 
     public void startMonitoring() {
+        int updateInterval = getUpdateInterval();
+
+        startMonitoring(updateInterval);
+    }
+
+    public void startMonitoring(int updateInterval) {
         // When the alarm goes off, we want to broadcast an Intent to our
         // BroadcastReceiver. Here we make an Intent with an explicit class
         // name to have our own receiver (which has been published in
@@ -74,8 +86,6 @@ public class MonitoringManager {
 
         // We want the alarm to go off now.
         long firstTime = SystemClock.elapsedRealtime();
-
-        int updateInterval = getUpdateInterval();
 
         // Schedule the alarm!
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);

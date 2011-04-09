@@ -19,6 +19,10 @@
    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  -->
 <PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:title="Update interval" android:numeric="integer" android:summary="How often the connection is checked in minutes" android:key="@string/updateIntervalID"/>
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:title="Update interval"
+        android:numeric="integer"
+        android:summary="How often the connection is checked in minutes"
+        android:key="@string/updateIntervalID" />
 </PreferenceScreen>
